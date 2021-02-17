@@ -1,0 +1,4 @@
+npx create-react-app client-app --use-npm --template typescript    
+
+swagger-codegen generate -i http://localhost:5000/swagger/v1/swagger.json -l typescript-axios
+

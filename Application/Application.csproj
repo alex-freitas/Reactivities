@@ -7,4 +7,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Activities\" />
+    <Folder Include="Core\" />
+  </ItemGroup>
 </Project>
