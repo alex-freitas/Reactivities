@@ -127,7 +127,7 @@ export class ActivitiesClient {
     /**
      * @return Success
      */
-    activitiesGet(id: string , cancelToken?: CancelToken | undefined): Promise<Activity> {
+    activitiesGetById(id: string , cancelToken?: CancelToken | undefined): Promise<Activity> {
         let url_ = this.baseUrl + "/api/Activities/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -150,11 +150,11 @@ export class ActivitiesClient {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processActivitiesGet(_response);
+            return this.processActivitiesGetById(_response);
         });
     }
 
-    protected processActivitiesGet(response: AxiosResponse): Promise<Activity> {
+    protected processActivitiesGetById(response: AxiosResponse): Promise<Activity> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
