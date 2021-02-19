@@ -40,7 +40,7 @@
       "useTransformOptionsMethod": false,
       "useTransformResultMethod": false,
       "generateDtoTypes": true,
-      "operationGenerationMode": "MultipleClientsFromPathSegments",
+      "operationGenerationMode": "MultipleClientsFromFirstTagAndPathSegments",
       "markOptionalProperties": true,
       "generateCloneMethod": false,
       "typeStyle": "Class",
@@ -68,7 +68,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": null,
+      "output": "ActivitiesClient.ts",
       "newLineBehavior": "Auto"
     }
   }
