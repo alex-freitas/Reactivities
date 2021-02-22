@@ -1,13 +1,19 @@
 import { observer } from "mobx-react-lite";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { Button, Form, Segment } from "semantic-ui-react";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
+import { v4 as uuid } from 'uuid';
 
 function ActivityForm() {
+    const history = useHistory();
     const { activityStore } = useStore();
-    const { selectedActivity, closeForm, createActivity, updateActivity, submitting } = activityStore;
+    const { createActivity, updateActivity, submitting, loadActivity, loadingInitial } = activityStore;
 
-    const initialState = selectedActivity ?? {
+    const { id } = useParams<{ id: string }>();
+
+    const [activity, setActivity] = useState({
         id: '',
         date: '',
         city: '',
@@ -15,12 +21,20 @@ function ActivityForm() {
         title: '',
         category: '',
         description: ''
-    };
+    });
 
-    const [activity, setActivity] = useState(initialState);
+    useEffect(() => {
+        id && loadActivity(id).then((activity) => setActivity(activity!));
+    }, [id, loadActivity]);
+    //TODO: TESTAR SEM AS DEPENDENCIAS
 
     function handleSubmit() {
-        activity.id ? updateActivity(activity) : createActivity(activity);
+        if (activity.id.length === 0) {
+            let newActivity = {...activity, id: uuid()};
+            createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`)); 
+        } else {             
+            updateActivity(activity).then(() => history.push(`/activities/${activity.id}`));
+        };
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -28,6 +42,8 @@ function ActivityForm() {
         let actualState = { ...activity, [name]: value };
         setActivity(actualState);
     }
+
+    if (loadingInitial) return <LoadingComponent />
 
     return (
         <Segment clearing>
@@ -40,7 +56,8 @@ function ActivityForm() {
                 <Form.Input placeholder='Venue' name='venue' value={activity.venue} onChange={handleInputChange} />
 
                 <Button floated='right' type='submit' content='Submit' positive loading={submitting} />
-                <Button floated='right' type='button' content='Cancel' onClick={closeForm} />
+                <Button floated='right' type='button' content='Cancel' 
+                    as={Link} to='/activities'/>
             </Form>
         </Segment>
     )
