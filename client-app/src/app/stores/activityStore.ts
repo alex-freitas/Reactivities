@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
-import { Activity } from "../models/Activity";
+import { Activity } from "../models/activity";
 
 
 export default class ActivityStore {
@@ -17,6 +17,28 @@ export default class ActivityStore {
     get activities() {
         const arr = Array.from(this.activityRegistry.values());
         return arr.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    }
+
+    get groupedActivities() {   
+        const initialValue = {} as { [key: string]: Activity[] };
+        //console.log('Initial Value', initialValue);
+
+        const reduced = this.activities/*.slice(0, 3)*/.reduce((accumulator, currentValue) => {
+            //console.log('Accumulator', accumulator);
+            //console.log('Current Value', typeof(currentValue), currentValue, currentValue.id);
+
+            const date = currentValue.date;
+            accumulator[date] = accumulator[date] ? [...accumulator[date], currentValue] : [currentValue];
+            return accumulator;
+        }, {} as { [key: string]: Activity[] });
+
+        //console.log('Reduced', reduced);
+
+        const objectEntries =  Object.entries(reduced);
+
+        //console.log('Object.Entries', objectEntries);
+
+        return objectEntries;
     }
 
     setLoadingInitial = (state: boolean) => { this.loadingInitial = state; }
@@ -53,8 +75,8 @@ export default class ActivityStore {
         try {
             activity = await agent.Activities.details(id);
             this.setActivity(activity);
-            runInAction(() => { 
-                this.selectedActivity = activity; 
+            runInAction(() => {
+                this.selectedActivity = activity;
             });
             this.setLoadingInitial(false);
             return activity;
@@ -66,11 +88,11 @@ export default class ActivityStore {
 
     createActivity = async (newActivity: Activity) => {
         this.setSubmitting(true);
-        
+
         try {
             await agent.Activities.create(newActivity);
 
-            runInAction(() => {        
+            runInAction(() => {
                 this.activityRegistry.set(newActivity.id, newActivity);
                 this.selectedActivity = newActivity;
                 this.editMode = false;
