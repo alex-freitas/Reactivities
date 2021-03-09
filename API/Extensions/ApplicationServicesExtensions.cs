@@ -30,7 +30,11 @@ namespace API.Extensions
                     policy
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:3000", "http://localhost:4000");
+                        .WithOrigins(
+                            "http://localhost:3000",
+                            "http://localhost:3001",
+                            "http://localhost:4000"
+                        );
                 });
             });
 
